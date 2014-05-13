@@ -1,0 +1,67 @@
+<!--
+  ~ IntelliJ Jenkins Integration Plugin
+  ~ Copyright (C) 2014 Andreas Vogler
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation; either version 2 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, write to the Free Software Foundation, Inc.,
+  ~ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  -->
+
+<idea-plugin version="2">
+    <id>geneon.intellij.plugin.jenkins</id>
+    <name>Jenkins Integration</name>
+    <version>0.1</version>
+    <vendor email="Andreas.Vogler@geneon.de" url="http://github.com">Andreas Vogler</vendor>
+
+    <description><![CDATA[
+      A plugin to integrate Jenkins with IntelliJ. View build status and results and start builds from within IntelliJ.
+      ]]></description>
+
+    <change-notes><![CDATA[
+      <ul>
+        <li>Initial version 0.1:
+          <ul>
+            <li>Configure Jenkins servers, build jobs and associate them with IntelliJ projects</li>
+            <li>List recent builds</li>
+            <li>Start build job</li>
+          </ul>
+        </li>
+      </ul>
+      ]]>
+    </change-notes>
+
+    <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+    <idea-version since-build="129.1359"/>
+
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <application-components>
+        <component>
+            <implementation-class>geneon.intellij.plugin.jenkins.AppConfiguration</implementation-class>
+        </component>
+    </application-components>
+
+    <project-components>
+        <!-- Add your project components here -->
+    </project-components>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable instance="geneon.intellij.plugin.jenkins.ui.AppConfigurable"/>
+    </extensions>
+</idea-plugin>
