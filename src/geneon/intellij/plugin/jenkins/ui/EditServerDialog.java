@@ -20,13 +20,19 @@
 package geneon.intellij.plugin.jenkins.ui;
 
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.ValidationInfo;
 import geneon.intellij.plugin.jenkins.model.JenkinsServer;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class EditServerDialog extends DialogWrapper {
     JenkinsServer jenkinsServer;
@@ -67,6 +73,13 @@ public class EditServerDialog extends DialogWrapper {
         nameTextField.setMinimumSize(new Dimension(300, 10));
         urlTextField.setMinimumSize(new Dimension(300, 10));
 
+        JButton testButton = new JButton("Test");
+        testButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testSettings();
+            }
+        });
+
         JPanel panel = new JPanel(new GridBagLayout());
         JLabel nameLabel = new JLabel("Server name:");
         panel.add(nameLabel,
@@ -78,7 +91,33 @@ public class EditServerDialog extends DialogWrapper {
                 new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 5, 10), 0, 0));
         panel.add(urlTextField,
                 new GridBagConstraints(1, 1, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 5, 0), 0, 0));
+        panel.add(testButton,
+                new GridBagConstraints(0, 2, 2, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 5, 0), 0, 0));
 
         return panel;
+    }
+
+    private void testSettings() {
+        String error = null;
+        try {
+            Response response = ClientBuilder.newClient().target(urlTextField.getText()).path("api/xml").request(MediaType.APPLICATION_XML_TYPE).get();
+            if (response.getStatus() != 200) {
+                error = "[" + response.getStatus() + "] " + response.readEntity(String.class);
+            }
+        } catch (Exception ex) {
+            error = ex.getMessage();
+        }
+
+        if (error == null) {
+            Messages.showInfoMessage("Connected succesfully", "Success");
+        } else {
+            Messages.showErrorDialog("Could not connect:\n" + error, "Failed");
+        }
+    }
+
+    @Nullable
+    @Override
+    public JComponent getPreferredFocusedComponent() {
+        return nameTextField;
     }
 }
