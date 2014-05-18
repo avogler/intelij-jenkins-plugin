@@ -19,19 +19,17 @@
 
 package geneon.intellij.plugin.jenkins;
 
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
+import com.intellij.openapi.components.*;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import geneon.intellij.plugin.jenkins.model.JenkinsServer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @State(name = "JenkinsConfiguration", storages = @Storage(id = "jenkins", file = StoragePathMacros.APP_CONFIG + "/jenkins.xml"))
-public class AppConfiguration implements PersistentStateComponent<AppConfiguration> {
+public class AppConfiguration implements ApplicationComponent, PersistentStateComponent<AppConfiguration> {
 
     private List<JenkinsServer> servers = new ArrayList<JenkinsServer>();
 
@@ -50,5 +48,18 @@ public class AppConfiguration implements PersistentStateComponent<AppConfigurati
 
     public void loadState(AppConfiguration state) {
         XmlSerializerUtil.copyBean(state, this);
+    }
+
+    public void disposeComponent() {
+
+    }
+
+    public void initComponent() {
+
+    }
+
+    @NotNull
+    public String getComponentName() {
+        return "geneon.intellij.plugin.jenkins.AppConfiguration";
     }
 }

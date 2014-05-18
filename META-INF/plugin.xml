@@ -54,7 +54,9 @@
     </application-components>
 
     <project-components>
-        <!-- Add your project components here -->
+        <component>
+            <implementation-class>geneon.intellij.plugin.jenkins.ui.JenkinsToolWindow</implementation-class>
+        </component>
     </project-components>
 
     <actions>
