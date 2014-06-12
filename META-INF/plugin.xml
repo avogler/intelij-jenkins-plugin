@@ -51,6 +51,9 @@
         <component>
             <implementation-class>geneon.intellij.plugin.jenkins.AppConfiguration</implementation-class>
         </component>
+        <component>
+            <implementation-class>geneon.intellij.plugin.jenkins.JenkinsService</implementation-class>
+        </component>
     </application-components>
 
     <project-components>

@@ -19,17 +19,16 @@
 
 package geneon.intellij.plugin.jenkins.ui;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.ValidationInfo;
+import geneon.intellij.plugin.jenkins.JenkinsService;
 import geneon.intellij.plugin.jenkins.model.JenkinsServer;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -98,15 +97,7 @@ public class EditServerDialog extends DialogWrapper {
     }
 
     private void testSettings() {
-        String error = null;
-        try {
-            Response response = ClientBuilder.newClient().target(urlTextField.getText()).path("api/xml").request(MediaType.APPLICATION_XML_TYPE).get();
-            if (response.getStatus() != 200) {
-                error = "[" + response.getStatus() + "] " + response.readEntity(String.class);
-            }
-        } catch (Exception ex) {
-            error = ex.getMessage();
-        }
+        String error = ServiceManager.getService(JenkinsService.class).testServerConnectivity(urlTextField.getText());
 
         if (error == null) {
             Messages.showInfoMessage("Connected succesfully", "Success");

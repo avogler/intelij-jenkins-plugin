@@ -19,9 +19,14 @@
 
 package geneon.intellij.plugin.jenkins.model;
 
+import com.intellij.util.xmlb.annotations.Transient;
+
+import java.util.List;
+
 public class JenkinsServer {
     private String name = "";
     private String url = "";
+    private List<JenkinsJob> jenkinsJobs = null;
 
     public String getName() {
         return name;
@@ -37,6 +42,20 @@ public class JenkinsServer {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    @Transient
+    public List<JenkinsJob> getJenkinsJobs() {
+        return jenkinsJobs;
+    }
+
+    public void setJenkinsJobs(List<JenkinsJob> jenkinsJobs) {
+        this.jenkinsJobs = jenkinsJobs;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     @Override

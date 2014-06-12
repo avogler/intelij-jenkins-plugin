@@ -20,7 +20,6 @@
 package geneon.intellij.plugin.jenkins.ui;
 
 import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.ToolWindow;
@@ -29,21 +28,17 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.ui.treeStructure.Tree;
-import geneon.intellij.plugin.jenkins.AppConfiguration;
-import geneon.intellij.plugin.jenkins.model.JenkinsServer;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.tree.TreeNode;
 import java.awt.*;
-import java.util.Enumeration;
-import java.util.List;
 
 public class JenkinsToolWindow extends JPanel implements ProjectComponent {
-    public static final String JENKINS_WINDOW_ID = "Jenkins";
-    private static final Icon jenkinsIcon = IconLoader.getIcon("/geneon/intellij/plugin/jenkins/ui/jenkins.png");
+    public static final String JENKINS_WINDOW_ID = "Jenkins Integration";
+    private static final Icon JENKINS_ICON = IconLoader.getIcon("/geneon/intellij/plugin/jenkins/ui/jenkins.png");
 
     private Project myProject;
+    private Tree tree;
 
     public JenkinsToolWindow(Project project) {
         myProject = project;
@@ -51,12 +46,11 @@ public class JenkinsToolWindow extends JPanel implements ProjectComponent {
 
     public void projectOpened() {
         ToolWindow toolWindow = ToolWindowManager.getInstance(myProject).registerToolWindow(JENKINS_WINDOW_ID, false, ToolWindowAnchor.RIGHT);
-        toolWindow.setIcon(jenkinsIcon);
+        toolWindow.setIcon(JENKINS_ICON);
         ContentManager contentManager = toolWindow.getContentManager();
         Content content = contentManager.getFactory().createContent(this, null, true);
         contentManager.addContent(content);
-        List<JenkinsServer> servers = ServiceManager.getService(AppConfiguration.class).getServers();
-
+        tree.setModel(new JenkinsTreeModel());
     }
 
     public void projectClosed() {
@@ -66,7 +60,7 @@ public class JenkinsToolWindow extends JPanel implements ProjectComponent {
     public void initComponent() {
         setLayout(new BorderLayout());
         add(new JToolBar(), BorderLayout.NORTH);
-        Tree tree = new Tree(new JenkinsRootNode());
+        tree = new Tree();
         tree.setRootVisible(false);
         tree.getEmptyText().setText("Please configure at least one Jenkins server!");
         add(tree, BorderLayout.CENTER);
@@ -79,35 +73,5 @@ public class JenkinsToolWindow extends JPanel implements ProjectComponent {
     @NotNull
     public String getComponentName() {
         return "geneon.intellij.plugin.jenkins.ui.JenkinsToolWindow";
-    }
-
-    private class JenkinsRootNode implements TreeNode {
-        public Enumeration children() {
-            return null;
-        }
-
-        public TreeNode getChildAt(int childIndex) {
-            return null;
-        }
-
-        public int getChildCount() {
-            return 0;
-        }
-
-        public TreeNode getParent() {
-            return null;
-        }
-
-        public int getIndex(TreeNode node) {
-            return 0;
-        }
-
-        public boolean getAllowsChildren() {
-            return true;
-        }
-
-        public boolean isLeaf() {
-            return false;
-        }
     }
 }
